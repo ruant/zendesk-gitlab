@@ -14,7 +14,7 @@
 <p>{{ issue.title }}</p>
 <br />
 <p class="caption">{{t 'issue.author'}}</p>
-<p>{{ author.name }}</p>
+<p>{{ issue.author.name }}</p>
 <br />
 <p class="caption">{{t 'issue.description'}}</p>
 <p>{{ issue.description }}</p>
