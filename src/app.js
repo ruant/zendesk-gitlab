@@ -196,6 +196,12 @@
             if (subject.length < 1) {
                 services.notify('You must include a subject.', 'error');
             } else {
+				// Check if there is any labels selected before we try to join them together to be posted to the api/v2/tickets/
+				var processedLabels = "";
+				if(labels !== null && labels.length > 0){
+					processedLabels = labels.join(',');
+				}
+				
                 var data = {
                     "id": this.PROJECT_TO_USE,
                     "title": subject,
@@ -203,7 +209,7 @@
                     "assignee_id": asignee,
                     "milestone_id": milestone,
                     "due_date": "due_date",
-                    "labels": labels.join(',')
+                    "labels": processedLabels
                 };
                 this.ajax('postGitLab', this.settings.project, data);
             }
