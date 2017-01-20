@@ -88,7 +88,7 @@
             'app.activated': 'onActivated',
             'postGitLab.done': 'result',
             'click #submitToGitLab': 'prep_to_post',
-            'getProjects.done': 'listProjects',
+            'getProjects.done': 'getProjectsDone',
             'getAudit.done': 'listIssues',
             'click .js-project': 'projectSelect',
             'updateTicket.done': 'reset',
@@ -97,7 +97,7 @@
 
             'click .nav-pills .js-projects': function () {
                 this.setActivePill('js-projects');
-                this.ajax('getProjects');
+				this.viewProjects();
             },
             'click .nav-pills .js-issues': function () {
                 this.setActivePill('js-issues');
@@ -147,31 +147,36 @@
             data = JSON.stringify(data);
             this.ajax('updateTicket', this.ticket().id(), data);
         },
-        listProjects: function (data) {
+		viewProjects: function() {
+			if(this.PROJECTS.length <= 0) {
+				this.ajax('getProjects');
+			} else {
+				this.setActivePill('js-projects');
+				this.switchTo('projectList', {project_data: this.PROJECTS});
+			}
+		},
+        getProjectsDone: function (data) {
             if (data == null) {
                 this.renderError("No data returned. Please check your API key.");
                 return false;
             }
-            // Only show active projects and sort by name
+            // Only show active projects and sort by name_with_namespace
             data = data.filter(function (project) {
                 return project.archived === PROJECT_STATUS_ARCHIVED;
-            }).map(function (project) {
-                // Prefix parent project's name
-                if (project.hasOwnProperty('parent')) {
-                    project.name = project.parent.name + ' - ' + project.name;
-                }
-                return project;
             }).sort(function (a, b) {
-                if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
-                if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+                if (a.name_with_namespace.toLowerCase() < b.name_with_namespace.toLowerCase()) return -1;
+                if (a.name_with_namespace.toLowerCase() > b.name_with_namespace.toLowerCase()) return 1;
                 return 0;
             });
 
+			// Store the fetched projects for later use
             this.PROJECTS = data;
-
-            this.setActivePill('js-projects');
-            this.switchTo('projectList', {project_data: data});
-            this.showSpinner(false);
+			
+			// Stop the spinner
+			this.showSpinner(false);
+			
+			// Call the viewProjects function again to actually view the project list
+			this.viewProjects();
         },
         prep_to_post: function () {
 
