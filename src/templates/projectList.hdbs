@@ -1,4 +1,7 @@
 <div id="projectList_div">
+    <p>
+        <input type="text" id="project_filter" placeholder="{{t 'project.filter'}}">
+    </p>
     <ul class="zdgitlab-list">
         {{#each project_data}}
             <li class="zdgitlab-list__entry">

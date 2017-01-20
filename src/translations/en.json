@@ -17,5 +17,8 @@
     "posted": "Issue created!",
     "pushed": "This ticket was pushed to GitLab",
     "subject": "Issue Title"
+  },
+  "project": {
+    "filter": "Filter projects..."
   }
 }

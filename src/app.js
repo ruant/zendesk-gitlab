@@ -94,6 +94,7 @@
             'updateTicket.done': 'reset',
             'click .issue': 'get_issue',
             'click .back_button': 'onActivated',
+			'keyup #project_filter': 'filterProjects',
 
             'click .nav-pills .js-projects': function () {
                 this.setActivePill('js-projects');
@@ -178,6 +179,17 @@
 			// Call the viewProjects function again to actually view the project list
 			this.viewProjects();
         },
+		filterProjects: function() {
+			var filter = this.$('#project_filter').val().toLowerCase();
+			var filteredProjects = this.PROJECTS.filter(function(project) {
+				return ~project.name.toLowerCase().indexOf(filter);
+			});
+			
+			// Render the template again since we've changes 
+			this.switchTo('projectList', {project_data: filteredProjects});
+			
+			this.$('#project_filter').val(filter).focus();
+		},
         prep_to_post: function () {
 
             this.showSpinner(true);
